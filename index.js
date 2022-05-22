@@ -51,10 +51,10 @@ async function run() {
          );
       };
 
-      // Get api to read all service
+      // Get api to read all service name
       app.get("/service", async (req, res) => {
          const query = req.query;
-         const cursor = serviceCollection.find(query);
+         const cursor = serviceCollection.find(query).project({ name: 1 });
          const services = await cursor.toArray();
          res.send(services);
       });
@@ -161,12 +161,12 @@ async function run() {
       });
 
       // Get api to read check admin
-      app.get("/admin/:email",jwtVerify, async (req, res) => {
+      app.get("/admin/:email", jwtVerify, async (req, res) => {
          const email = req.params.email;
          const user = await userCollection.findOne({ email: email });
          const isAdmin = user.role === "admin";
 
-         res.send(isAdmin);
+         res.send({ admin: isAdmin });
       });
 
       // //  Patch api to make Admin
